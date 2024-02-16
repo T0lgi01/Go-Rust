@@ -1,3 +1,4 @@
 fn main() {
-    println!("Hello, world!");
+    let a : [i32; 3] = [2, 3, 5];
+    println!("Hello, {}!", a[2]);
 }

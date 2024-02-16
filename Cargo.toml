@@ -1,5 +1,5 @@
 [package]
-name = "Go"
+name = "go"
 version = "0.1.0"
 edition = "2021"
 
