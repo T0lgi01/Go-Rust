@@ -1,7 +1,7 @@
 //#![allow(dead_code)]
 //#[warn(unused_mut)]
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 enum Cell {
     Empty,
     Black,
@@ -33,7 +33,7 @@ struct Board {
     move_count : u32, 
 }
 
-fn in_bounds(x: i32, y: i32) -> bool {
+fn in_bounds(x: isize, y: isize) -> bool {
     0 <= x && x < 19 && 0 <= y && y < 19
 }
 
@@ -80,9 +80,36 @@ impl Board {
         print!("Captures: B: {0}, W: {1}\nMove: {2}\n", 
             self.black_captures, self.white_captures, self.move_count);
     }
+
+    fn has_liberty(&self, x: &usize, y: &usize, mut checked: Vec<(usize, usize)>) -> bool{
+        let current_cell_color = self.board[*y][*x];
+        checked.push((*x, *y));
+        for k in 0..4 {
+            let x_off: isize = *x as isize + [0, 1, 0, -1][k];
+            let y_off: isize = *y as isize + [1, 0, -1, 0][k];
+            if !in_bounds(x_off, y_off) {continue;}
+            let x_off: usize = x_off as usize;
+            let y_off: usize = y_off as usize;
+            match self.board[y_off][x_off] {
+                Cell::Empty => {return true;},
+                a if a == current_cell_color && !checked.contains(&(x_off, y_off)) => {
+                    return self.has_liberty(&x_off, &y_off, checked);
+                },
+                _ => {},
+            }
+        }
+        false
+    }
 }
 
 fn main() {
     let mut b = Board::new();
+    b.board[0][2] = Cell::Black;
+    b.board[0][1] = Cell::Black;
+    b.board[0][3] = Cell::White;
+    b.board[1][2] = Cell::White;
+    b.board[1][1] = Cell::White;
     b.repr();
+    b.has_liberty(&2, &0, vec![]);
+    //println!("{}", b.has_liberty(&2, &0, vec![])) -> true
 }
