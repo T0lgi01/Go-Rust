@@ -64,11 +64,11 @@ impl Board {
         print!("\n");
 
         for x in 0..19 {
-            print!("{:>2} ", 19-x);
+            print!("{:>2} ", x+1);
             for y in 0..19 {
                 print!("{0} ", self.board[y][x].repr());
             }
-            print!("{:<2}\n", 19-x);
+            print!("{:<2}\n", x+1);
         };
         
         print!("   ");
@@ -92,10 +92,9 @@ impl Board {
             let y_off: usize = y_off as usize;
             match self.board[y_off][x_off] {
                 Cell::Empty => {return true;},
-                a if a == current_cell_color && !checked.contains(&(x_off, y_off)) => {
+                other => if other == current_cell_color && !checked.contains(&(x_off, y_off)) {
                     return self.has_liberty(&x_off, &y_off, checked);
                 },
-                _ => {},
             }
         }
         false
@@ -111,5 +110,5 @@ fn main() {
     b.board[1][1] = Cell::White;
     b.repr();
     b.has_liberty(&2, &0, vec![]);
-    //println!("{}", b.has_liberty(&2, &0, vec![])) -> true
+    println!("{}", b.has_liberty(&2, &0, vec![]));
 }
