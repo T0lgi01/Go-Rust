@@ -83,7 +83,7 @@ impl Board {
             self.black_captures, self.white_captures, self.move_color.repr());
     }
 
-    fn has_liberty(&self, x: &usize, y: &usize, mut checked: &Vec<(usize, usize)>) -> (bool, Vec<(usize, usize)>){
+    fn has_liberty(&self, x: &usize, y: &usize, mut checked: Vec<(usize, usize)>) -> (bool, Vec<(usize, usize)>){
         let current_cell_color = self.board[*y][*x];
         checked.push((*x, *y));
         for k in 0..4 {
@@ -95,7 +95,7 @@ impl Board {
             match self.board[y_off][x_off] {
                 Cell::Empty => {return (true, checked);},
                 other => if other == current_cell_color && !checked.contains(&(x_off, y_off)) {
-                    let (has_liberty, marked) = self.has_liberty(&x_off, &y_off, checked);
+                    let (has_liberty, marked) = self.has_liberty(&x_off, &y_off, checked.clone());
                     if has_liberty {
                         return (true, marked);
                     } else {
